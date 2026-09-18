@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MoodSwings — Login</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <span class="brand">MoodSwings</span>
+  </nav>
+  <div class="container">
+    <h1>Log in</h1>
+    <p class="subtitle">Log in to search songs, or upload as an artist.</p>
+
+    <div class="card">
+      <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
+      <form method="POST" action="/login">
+        <label class="field-label">Name or email</label>
+        <div class="form-row"><input type="text" name="name" required></div>
+        <label class="field-label">Password</label>
+        <div class="form-row"><input type="password" name="password" required></div>
+        <button type="submit">Log in</button>
+      </form>
+    </div>
+    <p class="subtitle">No account? <a href="/register">Register here</a></p>
+  </div>
+</body>
+</html>

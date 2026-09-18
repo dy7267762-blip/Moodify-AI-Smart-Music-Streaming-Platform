@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MoodSwings — Register</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <span class="brand">MoodSwings</span>
+  </nav>
+  <div class="container">
+    <h1>Create an account</h1>
+
+    <div class="card">
+      <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
+      <form method="POST" action="/register">
+        <label class="field-label">Name</label>
+        <div class="form-row"><input type="text" name="name" required></div>
+        <label class="field-label">Email</label>
+        <div class="form-row"><input type="email" name="email" required></div>
+        <label class="field-label">Password</label>
+        <div class="form-row"><input type="password" name="password" required></div>
+        <label class="field-label">Account type</label>
+        <div class="form-row">
+          <select name="role">
+            <option value="user">Listener</option>
+            <option value="artist">Artist</option>
+          </select>
+        </div>
+        <button type="submit">Register</button>
+      </form>
+    </div>
+    <p class="subtitle">Already have an account? <a href="/login">Log in</a></p>
+  </div>
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MoodSwings — Dashboard</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <span class="brand">MoodSwings</span>
+    <div class="nav-links">
+      <span class="nav-user">Hi, <%= currentUser.role %></span>
+      <form action="/logout" method="POST" style="display:inline;">
+        <button type="submit" class="link-button">Logout</button>
+      </form>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
+    <% if (success) { %><div class="alert alert-success"><%= success %></div><% } %>
+
+    <!-- ONE search box: matches songs, artists, and albums together -->
+    <div class="card">
+      <h3>Search</h3>
+      <form method="GET" action="/dashboard" class="search-form">
+        <input type="text" name="q" placeholder="Search songs, artists, or albums" value="<%= q %>">
+        <button type="submit">Search</button>
+      </form>
+
+      <div class="divider">— or search by mood —</div>
+
+      <form method="GET" action="/dashboard" class="search-form">
+        <input type="text" name="feeling" placeholder="e.g. I feel heartbroken, need something slow" value="<%= feeling %>">
+        <button type="submit">Search by mood</button>
+      </form>
+    </div>
+
+    <!-- MOOD search results -->
+    <% if (mode === "mood") { %>
+      <div class="card">
+        <h3>Mood matches</h3>
+        <p>
+          Matched moods:
+          <% if (tagsUsed.length) { %>
+            <% tagsUsed.forEach(function(tag) { %><span class="tag"><%= tag %></span><% }) %>
+          <% } else { %>
+            <span class="empty">no matching mood detected</span>
+          <% } %>
+        </p>
+        <% if (songResults.length === 0) { %>
+          <p class="empty">No songs found for that mood.</p>
+        <% } %>
+        <% songResults.forEach(function(song) { %>
+          <div class="song">
+            <div class="song-title"><%= song.title %></div>
+            <div class="song-artist"><%= song.artist ? song.artist.name : "Unknown artist" %></div>
+            <div>
+              <% (song.tags || []).forEach(function(tag) { %><span class="tag"><%= tag %></span><% }) %>
+            </div>
+            <audio controls src="<%= song.url %>"></audio>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+
+    <!-- TEXT search results: songs and albums together, one result set -->
+    <% if (mode === "text") { %>
+      <div class="card">
+        <h3>Songs</h3>
+        <% if (songResults.length === 0) { %>
+          <p class="empty">No matching songs.</p>
+        <% } %>
+        <% songResults.forEach(function(song) { %>
+          <div class="song">
+            <div class="song-title"><%= song.title %></div>
+            <div class="song-artist"><%= song.artist ? song.artist.name : "Unknown artist" %></div>
+            <div>
+              <% (song.tags || []).forEach(function(tag) { %><span class="tag"><%= tag %></span><% }) %>
+            </div>
+            <audio controls src="<%= song.url %>"></audio>
+          </div>
+        <% }) %>
+      </div>
+
+      <div class="card">
+        <h3>Albums</h3>
+        <% if (albumResults.length === 0) { %>
+          <p class="empty">No matching albums.</p>
+        <% } %>
+        <% albumResults.forEach(function(album) { %>
+          <div class="album">
+            <div class="song-title"><%= album.title %></div>
+            <div class="song-artist">
+              by <%= album.artist ? album.artist.name : "Unknown artist" %>
+              — <%= album.musics.length %> song(s)
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+
+    <!-- Artist-only: create songs and albums. That's the full extent of what
+         an artist can do here - no edit/delete, kept intentionally minimal. -->
+    <% if (currentUser.role === "artist") { %>
+
+      <div class="card">
+        <h3>Upload a song</h3>
+        <form method="POST" action="/dashboard/upload" enctype="multipart/form-data">
+          <label class="field-label">Title</label>
+          <div class="form-row"><input type="text" name="title" required></div>
+          <label class="field-label">Mood tags (optional, comma separated — leave blank to let AI tag it)</label>
+          <div class="form-row"><input type="text" name="tags" placeholder="e.g. happy, energetic"></div>
+          <label class="field-label">Audio file</label>
+          <div class="form-row"><input type="file" name="music" accept="audio/*" required></div>
+          <button type="submit">Upload</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h3>Create an album</h3>
+        <% if (mySongs.length === 0) { %>
+          <p class="empty">Upload some songs first.</p>
+        <% } else { %>
+          <form method="POST" action="/dashboard/album">
+            <label class="field-label">Album title</label>
+            <div class="form-row"><input type="text" name="title" required></div>
+            <label class="field-label">Pick songs</label>
+            <div class="checkbox-list">
+              <% mySongs.forEach(function(song) { %>
+                <label><input type="checkbox" name="musics" value="<%= song._id %>"> <%= song.title %></label>
+              <% }) %>
+            </div>
+            <button type="submit">Create album</button>
+          </form>
+        <% } %>
+      </div>
+
+      <div class="card">
+        <h3>Your songs</h3>
+        <% if (mySongs.length === 0) { %>
+          <p class="empty">You haven't uploaded any songs yet.</p>
+        <% } %>
+        <% mySongs.forEach(function(song) { %>
+          <div class="song">
+            <div class="song-title"><%= song.title %></div>
+            <div>
+              <% (song.tags || []).forEach(function(tag) { %><span class="tag"><%= tag %></span><% }) %>
+            </div>
+            <audio controls src="<%= song.url %>"></audio>
+          </div>
+        <% }) %>
+      </div>
+
+      <div class="card">
+        <h3>Your albums</h3>
+        <% if (myAlbums.length === 0) { %>
+          <p class="empty">No albums yet.</p>
+        <% } %>
+        <% myAlbums.forEach(function(album) { %>
+          <div class="album">
+            <div class="song-title"><%= album.title %></div>
+            <div class="song-artist"><%= album.musics.length %> song(s)</div>
+          </div>
+        <% }) %>
+      </div>
+
+    <% } %>
+
+  </div>
+</body>
+</html>

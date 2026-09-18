@@ -1,0 +1,166 @@
+:root {
+  --bg: #0f0f1a;
+  --surface: #1a1a2e;
+  --surface-alt: #232342;
+  --text: #eae6ff;
+  --text-muted: #a9a3c9;
+  --accent: #a855f7;
+  --accent-2: #ec4899;
+  --danger: #ef4444;
+  --success: #22c55e;
+  --radius: 12px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: linear-gradient(135deg, #0f0f1a 0%, #1a1030 100%);
+  background-attachment: fixed;
+  color: var(--text);
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 24px 16px 60px;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.navbar .brand {
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.nav-links { display: flex; gap: 18px; align-items: center; }
+.nav-user { color: var(--text-muted); font-size: 14px; }
+.nav-links a { color: var(--text-muted); text-decoration: none; font-size: 14px; }
+.nav-links a:hover { color: var(--text); }
+
+.link-button {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0;
+}
+.link-button:hover { color: var(--accent-2); }
+
+h1 { font-size: 26px; margin-bottom: 4px; }
+h3 { margin-top: 0; }
+.subtitle { color: var(--text-muted); margin-top: 0; margin-bottom: 24px; }
+
+.card {
+  background: var(--surface);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.search-form {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+input[type=text],
+input[type=email],
+input[type=password],
+input[type=file],
+select,
+textarea {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--surface-alt);
+  color: var(--text);
+}
+
+.search-form input[type=text] { width: auto; flex: 1; }
+
+input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); }
+
+button, .btn {
+  padding: 10px 18px;
+  font-size: 14px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-block;
+}
+button:hover, .btn:hover { opacity: 0.9; }
+
+button.danger { background: var(--danger); }
+button.secondary, .btn.secondary { background: var(--surface-alt); color: var(--text); border: 1px solid rgba(255, 255, 255, 0.12); }
+
+.divider {
+  text-align: center;
+  color: var(--text-muted);
+  margin: 18px 0;
+  font-size: 13px;
+}
+
+.song, .album {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 14px 0;
+}
+.song:last-child, .album:last-child { border-bottom: none; }
+
+.song-title { font-size: 15px; font-weight: 600; }
+.song-artist { color: var(--text-muted); font-size: 13px; }
+
+.tag {
+  display: inline-block;
+  background: rgba(168, 85, 247, 0.15);
+  color: var(--accent);
+  border-radius: 999px;
+  padding: 2px 10px;
+  margin: 6px 6px 0 0;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+audio { width: 100%; margin-top: 8px; }
+
+.empty { color: var(--text-muted); font-style: italic; }
+
+.form-row { margin-bottom: 12px; }
+
+.song-actions { display: flex; gap: 8px; margin-top: 10px; }
+.song-actions form { display: inline; }
+
+.alert { padding: 10px 14px; border-radius: 8px; margin-bottom: 16px; font-size: 14px; }
+.alert-error { background: rgba(239, 68, 68, 0.15); color: #fca5a5; }
+.alert-success { background: rgba(34, 197, 94, 0.15); color: #86efac; }
+
+.checkbox-list {
+  max-height: 160px;
+  overflow-y: auto;
+  background: var(--surface-alt);
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+.checkbox-list label { display: block; font-size: 13px; padding: 4px 0; color: var(--text); }
+
+label.field-label { font-size: 13px; color: var(--text-muted); display: block; margin-bottom: 4px; }
