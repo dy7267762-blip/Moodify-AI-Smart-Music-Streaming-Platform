@@ -2,6 +2,9 @@ const musicModel = require("../../model/music.model");
 const { generateTagsForSong, MOOD_TAGS } = require("./gemini.service");
 const { uploadFile } = require("./storage.service");
  
+
+
+
 function parseTags(rawTags) {
     if (!rawTags) return [];
     return rawTags
@@ -10,8 +13,9 @@ function parseTags(rawTags) {
         .filter((t) => MOOD_TAGS.includes(t));
 }
  
-// Upload a song. If the artist typed tags, use those (filtered against our
-// fixed vocabulary). Otherwise, ask Gemini to auto-tag it from the title.
+
+
+
 async function createSong({ title, rawTags, file, artistId }) {
     const result = await uploadFile(file.buffer.toString("base64"));
  
@@ -32,6 +36,11 @@ async function createSong({ title, rawTags, file, artistId }) {
     return musicModel.create({ url: result.url, title, artist: artistId, tags });
 }
  
+
+
+
+
+
 async function findSongsByArtist(artistId) {
     return musicModel.find({ artist: artistId }).sort({ _id: -1 });
 }

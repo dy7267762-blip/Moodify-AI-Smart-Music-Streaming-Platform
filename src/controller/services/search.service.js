@@ -3,14 +3,20 @@ const albumModel = require("../../model/album.model");
 const userModel = require("../../model/user.model");
 const { extractMoodTagsFromFeeling, MOOD_TAGS } = require("./gemini.service");
  
+
+
+
+
 function escapeRegex(str) {
     return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
  
-// ONE search box, matching songs, artists, and albums together - not three
-// separate searches. A song matches if its own title matches, OR its artist's
-// name matches. Same idea for albums. That's why we look up matching artist
-// ids first, then reuse them for both the song query and the album query.
+
+
+
+
+
+
 async function searchAll(query) {
     if (!query || !query.trim()) {
         return { songs: [], albums: [] };
@@ -33,10 +39,13 @@ async function searchAll(query) {
     return { songs, albums };
 }
  
-// Mood/feeling search: Gemini turns free text into tags from our fixed
-// vocabulary, then a plain MongoDB $in query filters songs by those tags.
-// Falls back to a simple keyword match if the Gemini call fails, so this
-// never hard-errors even if the API key/quota has a problem.
+
+
+
+
+
+
+
 async function searchByMood(feelingText) {
     if (!feelingText || !feelingText.trim()) {
         return { tagsUsed: [], songs: [] };
@@ -58,11 +67,35 @@ async function searchByMood(feelingText) {
         return { tagsUsed: [], songs: [] };
     }
  
-    const songs = await musicModel
-        .find({ tags: { $in: tagsUsed } })
-        .populate("artist", "name email");
- 
-    return { tagsUsed, songs };
+const songs = await musicModel.aggregate([
+    { $match: { tags: { $in: tagsUsed } } },
+    {
+        $addFields: {
+            matchCount: {
+                $size: {
+                    $setIntersection: [{ $ifNull: ["$tags", []] }, tagsUsed]
+                }
+            }
+        }
+    },
+    { $sort: { matchCount: -1, _id: -1 } },
+    { $limit: 15 }
+]);
+
+// options: { lean: true } is required for plain aggregate objects in Mongoose 9
+await musicModel.populate(songs, {
+    path: "artist",
+    select: "name email",
+    options: { lean: true }
+});
+
+return { tagsUsed, songs };
 }
+
+
+
+
+
+
  
 module.exports = { searchAll, searchByMood };

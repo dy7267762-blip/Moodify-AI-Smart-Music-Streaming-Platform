@@ -86,7 +86,7 @@ async function searchMusic(req, res) {
         albums
     });
 }
- 
+
 async function searchMoodMusic(req, res) {
     const { feeling } = req.query;
     const { tagsUsed, songs } = await searchByMood(feeling);
